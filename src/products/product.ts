@@ -20,5 +20,5 @@ export class Product {
   readonly price?: number;
 
   @ApiModelProperty({ example: 5 })
-  readonly stock?: number;
+  stock?: number;
 }
