@@ -12,35 +12,35 @@ import {
   HttpCode,
 } from '@nestjs/common';
 
-import productsJson from './../../static/data/products.json';
 import { Product } from './product';
 import { ApiUseTags } from '@nestjs/swagger';
+import { ProductsService } from './products.service';
 
 @ApiUseTags('products')
 @Controller('api/v1/products')
 export class ProductsController {
-  products: Product[] = productsJson;
+  constructor(private readonly productsService: ProductsService) {}
 
   @Get('')
   findAll(): any[] {
-    return this.products;
+    return this.productsService.findAll();
   }
 
   @Put('')
   create(@Body() product: any) {
-    if (this.products.length > 5) {
+    if (this.productsService.findAll().length > 5) {
       throw new HttpException(
         `Too much products added !`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
-    this.products.push(product);
+    this.productsService.add(product);
     return product;
   }
 
   @Get(':id')
   findOne(@Param('id', new ParseIntPipe()) id: number): Product {
-    const product: Product = this.products.find(pro => pro.id === id);
+    const product: Product = this.productsService.findOneById(id);
     if (product === undefined) {
       throw new HttpException(
         `Cannot find a product 🤔 with id ${id}`,
@@ -52,31 +52,28 @@ export class ProductsController {
 
   @Post('')
   update(@Body() productToUpdate: any) {
-    const productIndex = this.products.findIndex(
-      (product: Product) => product.id === productToUpdate.id,
+    const findProduct: Product = this.productsService.findOneById(
+      productToUpdate.id,
     );
-    if (productIndex === -1) {
+    if (findProduct === undefined) {
       throw new HttpException(
-        `Cannot find a product with id ${productToUpdate.id}`,
+        `Cannot find a product 📦 with id ${productToUpdate.id}`,
         HttpStatus.NOT_FOUND,
       );
     }
-    this.products[productIndex] = productToUpdate;
-    return productToUpdate;
+    return this.productsService.update(productToUpdate);
   }
 
   @Delete(':id')
   @HttpCode(204)
   delete(@Param('id', new ParseIntPipe()) id: number) {
-    const productIndex = this.products.findIndex(
-      (product: Product) => product.id === id,
-    );
-    if (productIndex < 0) {
+    const findProduct: Product = this.productsService.findOneById(id);
+    if (findProduct === undefined) {
       throw new HttpException(
-        `Cannot find a product 🤔 with id ${id}`,
+        `Cannot find a product 📦 with id ${id}`,
         HttpStatus.NOT_FOUND,
       );
     }
-    this.products.splice(productIndex, 1);
+    this.productsService.delete(id);
   }
 }
