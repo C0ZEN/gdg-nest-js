@@ -10,11 +10,13 @@ import {
   Post,
   Delete,
   HttpCode,
+  UseGuards,
 } from '@nestjs/common';
 
 import { Product } from './product';
-import { ApiUseTags } from '@nestjs/swagger';
+import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger';
 import { ProductsService } from './products.service';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiUseTags('products')
 @Controller('api/v1/products')
@@ -26,6 +28,8 @@ export class ProductsController {
     return this.productsService.findAll();
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @Put('')
   create(@Body() product: any) {
     if (this.productsService.findAll().length > 5) {
@@ -50,6 +54,8 @@ export class ProductsController {
     return product;
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @Post('')
   update(@Body() productToUpdate: any) {
     const findProduct: Product = this.productsService.findOneById(
@@ -64,6 +70,8 @@ export class ProductsController {
     return this.productsService.update(productToUpdate);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @Delete(':id')
   @HttpCode(204)
   delete(@Param('id', new ParseIntPipe()) id: number) {
