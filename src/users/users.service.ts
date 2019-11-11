@@ -1,28 +1,26 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
+import { JwtPayload } from './interfaces/jwt-payload.interface';
+import { User } from './interfaces/user.interface';
+import usersJson from './../../static/data/users.json';
+
 @Injectable()
 export class UsersService {
-  users = [
-    {
-      id: 1,
-      username: 'Aurel',
-      email: 'aurelien@loyer.fr',
-      password: 'product',
-      cart: {},
-    },
-    {
-      id: 2,
-      username: 'Manu',
-      email: 'emmanuel@demey.fr',
-      password: 'product',
-      cart: {},
-    },
-  ];
+  users: User[] = usersJson;
+
   constructor(private readonly jwtService: JwtService) {}
 
+  getAll(): User[] {
+    return this.users;
+  }
+
+  getOne(id: number): User {
+    return this.users.find(user => user.id === id);
+  }
+
   async login({ email, password }) {
-    const payload: { email: string; password: string } = { email, password };
+    const payload: JwtPayload = { email, password };
 
     const isValidUser = await this.validateUser(payload);
 
@@ -37,11 +35,8 @@ export class UsersService {
     }
   }
 
-  async validateUser(payload: {
-    email: string;
-    password: string;
-  }): Promise<boolean> {
-    return !!this.users.find(
+  async validateUser(payload: JwtPayload): Promise<User> {
+    return this.users.find(
       user =>
         user.password === payload.password && user.email === payload.email,
     );
