@@ -1,4 +1,4 @@
-import { ApiModelProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptions } from '@nestjs/swagger';
 import {
   IsNumber,
   Validate,
@@ -14,32 +14,32 @@ import { ExtensionValidator } from './validators/extension.validator';
 export class Product {
   @IsNumber()
   @Validate(UuidValidator)
-  @ApiModelProperty({ example: 12 })
+  @ApiProperty({ example: 12 } as ApiPropertyOptions)
   readonly id: number;
 
   @IsString()
-  @ApiModelProperty({ example: 'Super product' })
+  @ApiProperty({ example: 'Super product' } as ApiPropertyOptions)
   readonly label?: string;
 
   @IsString()
   @Length(10, 80)
-  @ApiModelProperty({
+  @ApiProperty({
     example:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor ...',
-  })
+  } as ApiPropertyOptions)
   readonly description?: string;
 
   @Validate(ExtensionValidator)
-  @ApiModelProperty({ example: '' })
+  @ApiProperty({ example: '' } as ApiPropertyOptions)
   readonly image?: string;
 
   @IsInt()
   @Min(0)
   @Max(100)
-  @ApiModelProperty({ example: 15.0 })
+  @ApiProperty({ example: 15.0 } as ApiPropertyOptions)
   readonly price?: number;
 
   @IsInt()
-  @ApiModelProperty({ example: 5 })
+  @ApiProperty({ example: 5 } as ApiPropertyOptions)
   stock?: number;
 }

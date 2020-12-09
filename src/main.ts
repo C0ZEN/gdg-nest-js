@@ -21,7 +21,6 @@ async function bootstrap() {
     .setTitle('Codelab Nest - Products API')
     .setDescription('An API to retrieve products informations')
     .setVersion('1.0')
-    .addBearerAuth('Authorization', 'header')
     .build();
 
   const document = SwaggerModule.createDocument(app, options);
