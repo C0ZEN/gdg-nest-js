@@ -24,7 +24,7 @@ export class AppController {
     }
 
     @Put('product')
-    create(@Body() product: any) {
+    create(@Body() product: Product) {
         if (this.products.length > 5) {
             throw new HttpException(
                 `Too much products added !`,
@@ -48,7 +48,7 @@ export class AppController {
     }
 
     @Post('product')
-    update(@Body() productToUpdate: any) {
+    update(@Body() productToUpdate: Product) {
         const productIndex = this.products.findIndex((product: Product) => product.id === productToUpdate.id);
         if (productIndex === -1) {
             throw new HttpException(
