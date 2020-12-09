@@ -14,20 +14,20 @@ import {
 
 import productsJson from './../../static/data/products.json';
 import { Product } from './product';
-import { ApiUseTags } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 
-@ApiUseTags('products')
+@ApiTags('products')
 @Controller('api/v1/products')
 export class ProductsController {
   products: Product[] = productsJson;
 
   @Get('')
-  findAll(): any[] {
+  findAll(): Product[] {
     return this.products;
   }
 
   @Put('')
-  create(@Body() product: any) {
+  create(@Body() product: Product) {
     if (this.products.length > 5) {
       throw new HttpException(
         `Too much products added !`,
@@ -51,7 +51,7 @@ export class ProductsController {
   }
 
   @Post('')
-  update(@Body() productToUpdate: any) {
+  update(@Body() productToUpdate: Product) {
     const productIndex = this.products.findIndex(
       (product: Product) => product.id === productToUpdate.id,
     );
