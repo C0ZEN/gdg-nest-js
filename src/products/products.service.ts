@@ -1,10 +1,15 @@
-import { Injectable } from '@nestjs/common';
-import productsJson from './../../static/data/products.json';
+import { Inject, Injectable } from '@nestjs/common';
 import { Product } from './product.js';
 
 @Injectable()
 export class ProductsService {
-  private products: Product[] = productsJson;
+  private products: Product[];
+
+  constructor(
+    @Inject('ProductsJson') private readonly productsJson: Product[],
+  ) {
+    this.products = productsJson;
+  }
 
   findOneById(id: number): Product {
     return this.products.find(product => product.id === id);
